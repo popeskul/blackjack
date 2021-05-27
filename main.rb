@@ -1,6 +1,9 @@
 require_relative 'game'
 
 class Main
+  POINT = 21
+  MIN_BANK_VALUE = 10
+
   attr_accessor :game
 
   def start
@@ -42,7 +45,11 @@ class Main
   end
 
   def give_card
-    if @game.user.hands_score <= 21 && @game.user.money >= 10 && @game.user.number_hands < 3
+    user_has_score = @game.user.hands_score <= POINT
+    user_has_min_money = @game.user.money >= MIN_BANK_VALUE
+    user_have_lower_than_3_card = @game.user.number_hands < 3
+
+    if user_has_score && user_has_min_money && user_have_lower_than_3_card
       @game.give_card_to(@game.user)
       @game.give_card_to(@game.dealer)
     else
@@ -73,8 +80,8 @@ class Main
 
   def skip_and_finish
     @game.give_card_to(@game.dealer) while @game.dealer.hands_score <= 17
-    @game.scoring_game
 
+    @game.scoring_game
     restart
   end
 

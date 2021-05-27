@@ -8,6 +8,7 @@ class Game
   BET = 10
   POINT = 21
   NAME_FORMAT = /^\S/
+  MIN_BANK_VALUE = 10
 
   attr_accessor :user, :dealer, :attempt
 
@@ -20,11 +21,11 @@ class Game
   end
 
   def make_bet(player)
-    if player.money < 10
+    if player.money < MIN_BANK_VALUE
       puts "Error, your score is #{player.money}. Refill your bank to at least 10 points."
     else
-      player.money -= 10
-      @bank.money += 10
+      player.money -= BET
+      @bank.money += BET
     end
   end
 
@@ -69,8 +70,8 @@ class Game
         @dealer.money += 20
         puts "#{@dealer.name} won with #{@dealer.hands_score} score."
       else
-        @dealer.money += 10
-        @user.money += 10
+        @dealer.money += BET
+        @user.money += BET
         puts "#{@dealer.name} and #{@user.name} divide the bank."
       end
     end
