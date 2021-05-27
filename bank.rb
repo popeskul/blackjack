@@ -1,7 +1,7 @@
 class Bank
-  attr_accessor :score
+  attr_accessor :money
 
   def initialize
-    @score = 0
+    @money = 0
   end
 end

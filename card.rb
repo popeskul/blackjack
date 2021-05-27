@@ -12,6 +12,10 @@ class Card
     validate!
   end
 
+  def value=(value)
+    @value = value
+  end
+
   def validate!
     raise 'Wrong format for card' if sign !~ SIGN_FORMAT
   end
