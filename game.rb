@@ -34,16 +34,13 @@ class Game
   end
 
   def give_card_to(player)
-    if player.hands_score <= 21 && player.money >= 10 && player.number_hands < 3
-      @deck.rand_card
-      @deck.remove_card
+    attempt
+    @deck.rand_card
+    @deck.remove_card
 
-      player.hands.hands << @deck.get_deleted_card
-      player.hands_score += @deck.get_deleted_card.value
-      player.number_hands += 1
-    else
-      puts "Recount cards! You have #{player.hands_score}"
-    end
+    player.hands.hands << @deck.get_deleted_card
+    player.hands_score += @deck.get_deleted_card.value
+    player.number_hands += 1
   end
 
   def scoring_game
@@ -60,11 +57,16 @@ class Game
       @dealer.money += 10
       puts "#{@dealer.name} won with #{@dealer.hands_score} score."
     when 0
-      @user.money += 10
-      puts "#{@user.name} won with #{@user.hands_score} score."
+      if @user.hands_score > 21
+        @dealer.money += 10
+        puts "#{@dealer.name} won with #{@dealer.hands_score} score."
+      else
+        @user.money += 10
+        puts "#{@user.name} won with #{@user.hands_score} score."
+      end
     else
-      @dealer.money += 5
-      @user.money += 5
+      @dealer.money += 10
+      @user.money += 10
       puts "#{@dealer.name} and #{@user.name} divide the bank."
     end
 

@@ -15,12 +15,14 @@ class Main
       puts '%-15s 1' % 'Cards'
       puts '%-15s 2' % 'See cards'
       puts '%-15s 3' % 'See bank'
+      puts '%-15s 0' % 'EXIT'
 
       usder_choice = gets.chomp
       case usder_choice
       when '1' then cards_menu
       when '2' then hands
       when '3' then bank
+      when '0' then break
       else puts 'Sorry, try again!'
       end
     end
@@ -49,8 +51,12 @@ class Main
   end
 
   def give_card
-    @game.give_card_to(@game.user)
-    @game.give_card_to(@game.dealer)
+    if @game.user.hands_score <= 21 && @game.user.money >= 10 && @game.user.number_hands < 3
+      @game.give_card_to(@game.user)
+      @game.give_card_to(@game.dealer)
+    else
+      puts "Recount cards!"
+    end
   end
 
   def create_game
@@ -93,3 +99,6 @@ class Main
     @game.scoring_game
   end
 end
+
+main = Main.new
+main.start
