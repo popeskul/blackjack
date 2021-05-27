@@ -1,8 +1,4 @@
-class User
-  attr_accessor :score
+require_relative 'player'
 
-  def initialize(name)
-    @user_name = name
-    @score = 100
-  end
+class User < Player
 end

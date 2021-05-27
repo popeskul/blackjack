@@ -1,7 +1,4 @@
-class Dealer
-  attr_accessor :score
+require_relative 'player'
 
-  def initialize
-    @score = 100
-  end
+class Dealer < Player
 end
