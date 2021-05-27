@@ -101,3 +101,6 @@ class Main
     end
   end
 end
+
+main = Main.new
+main.start
