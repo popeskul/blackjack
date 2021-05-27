@@ -6,6 +6,8 @@ require_relative 'hand'
 
 class Game
   BET = 10
+  POINT = 21
+  NAME_FORMAT = /^\S/
 
   attr_accessor :user, :dealer, :attempt
 
@@ -16,8 +18,6 @@ class Game
     @bank = Bank.new
     create_deck
   end
-
-  def start; end
 
   def make_bet(player)
     if player.money < 10
@@ -34,12 +34,13 @@ class Game
   end
 
   def give_card_to(player)
-    attempt
+    @attempt += 1
+
     @deck.rand_card
     @deck.remove_card
 
-    player.hands.hands << @deck.get_deleted_card
-    player.hands_score += @deck.get_deleted_card.value
+    player.hands.hands << @deck.deleted_card
+    player.hands_score += @deck.deleted_card.value
     player.number_hands += 1
   end
 
@@ -47,8 +48,7 @@ class Game
     user = @user.hands_score
     dealer = @dealer.hands_score
     numbers = [user, dealer]
-    point = 21
-    close_number = numbers.sort_by{ |i| (i-point).abs }[0]
+    close_number = numbers.min_by { |i| (i - POINT).abs }
 
     @bank.money -= 20
 
@@ -57,7 +57,7 @@ class Game
       @dealer.money += 20
       puts "#{@dealer.name} won with #{@dealer.hands_score} score."
     when 0
-      if @user.hands_score > 21
+      if @user.hands_score > POINT
         @dealer.money += 20
         puts "#{@dealer.name} won with #{@dealer.hands_score} score."
       else
@@ -65,7 +65,7 @@ class Game
         puts "#{@user.name} won with #{@user.hands_score} score."
       end
     else
-      if @user.hands_score > 21
+      if @user.hands_score > POINT
         @dealer.money += 20
         puts "#{@dealer.name} won with #{@dealer.hands_score} score."
       else
@@ -90,22 +90,19 @@ class Game
     @dealer.number_hands = 0
   end
 
-  def scoresheet
+  def score_sheet
     puts 'Money: '
-    puts ('%-15s %s' % [@user.name, @user.money]).gsub(' ', '.')
-    puts ('%-15s %s' % [@dealer.name, @dealer.money]).gsub(' ', '.')
-    puts ('%-15s %s' % ['Bank', @bank.money]).gsub(' ', '.')
-  end
-
-  def attempt
-    @attempt += 1
+    puts format('%-15s %s', @user.name, @user.money).gsub(' ', '.')
+    puts format('%-15s %s', @dealer.name, @dealer.money).gsub(' ', '.')
+    puts format('%-15s %s', 'Bank', @bank.money).gsub(' ', '.')
   end
 
   def current_hands(player)
-    player.get_hands
-  end
+    total_score = 0
 
-  def bank
-    @bank.money
+    player.hands.hands.each do |hand|
+      total_score += hand.value
+      puts format('%-15s %s', hand.sign, hand.value).gsub(' ', '.')
+    end
   end
 end

@@ -1,7 +1,7 @@
 require_relative 'card'
 
 class Deck
-  attr_reader :deleted_card
+  attr_accessor :deleted_card
 
   def create_deck
     deck = []
@@ -17,9 +17,5 @@ class Deck
 
   def remove_card
     @deck.delete(@deleted_card)
-  end
-
-  def get_deleted_card
-    @deleted_card
   end
 end
