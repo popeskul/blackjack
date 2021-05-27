@@ -54,20 +54,25 @@ class Game
 
     case close_number <=> user
     when 1
-      @dealer.money += 10
+      @dealer.money += 20
       puts "#{@dealer.name} won with #{@dealer.hands_score} score."
     when 0
       if @user.hands_score > 21
-        @dealer.money += 10
+        @dealer.money += 20
         puts "#{@dealer.name} won with #{@dealer.hands_score} score."
       else
-        @user.money += 10
+        @user.money += 20
         puts "#{@user.name} won with #{@user.hands_score} score."
       end
     else
-      @dealer.money += 10
-      @user.money += 10
-      puts "#{@dealer.name} and #{@user.name} divide the bank."
+      if @user.hands_score > 21
+        @dealer.money += 20
+        puts "#{@dealer.name} won with #{@dealer.hands_score} score."
+      else
+        @dealer.money += 10
+        @user.money += 10
+        puts "#{@dealer.name} and #{@user.name} divide the bank."
+      end
     end
 
     clear_stats
