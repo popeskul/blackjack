@@ -75,13 +75,17 @@ class Main
   def see_cards
     hands = @game.current_hands(@game.user)
 
+    print_value = lambda { |name, value|
+      format('%<name>-15s %<value>s', name: name, value: value).gsub(' ', '.')
+    }
+
     total_score = 0
     hands.each do |hand|
       total_score += hand.value
-      puts format('%-15s %s', hand.sign, hand.value).gsub(' ', '.')
+      puts print_value.call(hand.sign, hand.value)
     end
 
-    puts format('%-15s %s', 'Total', total_score).gsub(' ', '.')
+    puts print_value.call('Total', total_score)
   end
 
   def see_bank

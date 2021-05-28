@@ -82,7 +82,6 @@ class Game
     end
   end
 
-
   def clear_stats
     @attempt = 0
 
@@ -96,7 +95,7 @@ class Game
   end
 
   def score_sheet
-    print_scores = ->(name, money) { format('%-15s %s', name, money).gsub(' ', '.') }
+    print_scores = ->(name, money) { format('%<name>-15s %<money>s', name: name, money: money).gsub(' ', '.') }
 
     puts 'Money: '
     puts print_scores.call(@user.name, @user.money)
@@ -105,11 +104,6 @@ class Game
   end
 
   def current_hands(player)
-    total_score = 0
-
-    player.hands.hands.each do |hand|
-      total_score += hand.value
-      puts format('%-15s %s', hand.sign, hand.value).gsub(' ', '.')
-    end
+    player.hands.hands
   end
 end
