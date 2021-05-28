@@ -7,17 +7,19 @@ require_relative 'hand'
 class Game
   BET = 10
   POINT = 21
-  NAME_FORMAT = /^\S/
   MIN_BANK_VALUE = 10
 
   attr_accessor :user, :dealer, :attempt
 
-  def create_game(name)
+  def initialize
     @attempt = 0
-    @user = User.new(name)
-    @dealer = Dealer.new('Dealer')
+    @dealer = Dealer.new
     @bank = Bank.new
-    create_deck
+    @deck = Deck.new
+  end
+
+  def add_player(name)
+    @user = User.new(name)
   end
 
   def make_bet(player)
@@ -27,11 +29,6 @@ class Game
       player.money -= BET
       @bank.money += BET
     end
-  end
-
-  def create_deck
-    @deck = Deck.new
-    @deck.create_deck
   end
 
   def give_card_to(player)
@@ -50,6 +47,7 @@ class Game
     dealer = @dealer.hands_score
     numbers = [user, dealer]
     close_number = numbers.min_by { |i| (i - POINT).abs }
+    p close_number.inspect
 
     @bank.money -= 20
 

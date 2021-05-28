@@ -3,7 +3,7 @@ require_relative 'card'
 class Deck
   attr_accessor :deleted_card
 
-  def create_deck
+  def initialize
     deck = []
     Card::SUITS.each do |suit|
       Card::SIGNS.each { |sign| deck << Card.new(sign, suit) }

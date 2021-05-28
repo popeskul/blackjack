@@ -3,6 +3,7 @@ require_relative 'game'
 class Main
   POINT = 21
   MIN_BANK_VALUE = 10
+  FINAL_SCORE = 17
 
   attr_accessor :game
 
@@ -10,16 +11,6 @@ class Main
     puts 'Game "Black Jack"'
     create_game
     main_menu
-  end
-
-  def create_game
-    puts 'What is your name?'
-    user_name = gets.chomp
-
-    @game = Game.new
-    @game.create_game(user_name)
-
-    make_bet
   end
 
   def main_menu
@@ -44,12 +35,31 @@ class Main
     end
   end
 
+  def create_game
+    attempt = 3
+
+    begin
+      puts 'What is your name?'
+      user_name = gets.chomp
+
+      @game = Game.new
+      @game.add_player(user_name)
+
+      make_bet
+    rescue StandardError => e
+      attempt -= 1
+      puts e.message
+      puts "Attempts left - #{attempt}"
+      retry if attempt.positive?
+    end
+  end
+
   def give_card
-    user_has_score = @game.user.hands_score <= POINT
-    user_has_min_money = @game.user.money >= MIN_BANK_VALUE
+    user_have_score = @game.user.hands_score <= POINT
+    user_have_min_money = @game.user.money >= MIN_BANK_VALUE
     user_have_lower_than_3_card = @game.user.number_hands < 3
 
-    if user_has_score && user_has_min_money && user_have_lower_than_3_card
+    if user_have_score && user_have_min_money && user_have_lower_than_3_card
       @game.give_card_to(@game.user)
       @game.give_card_to(@game.dealer)
     else
@@ -79,7 +89,7 @@ class Main
   end
 
   def skip_and_finish
-    @game.give_card_to(@game.dealer) while @game.dealer.hands_score <= 17
+    @game.give_card_to(@game.dealer) while @game.dealer.hands_score <= FINAL_SCORE
 
     @game.scoring_game
     restart
