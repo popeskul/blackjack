@@ -23,11 +23,11 @@ class Game
   end
 
   def make_bet(player)
-    if player.money < MIN_BANK_VALUE
-      puts "Error, your score is #{player.money}. Refill your bank to at least 10 points."
-    else
+    if player.money > MIN_BANK_VALUE
       player.money -= BET
       @bank.money += BET
+    else
+      puts "Error, your score is #{player.money}. Refill your bank to at least 10 points."
     end
   end
 
@@ -47,35 +47,41 @@ class Game
     dealer = @dealer.hands_score
     numbers = [user, dealer]
     close_number = numbers.min_by { |i| (i - POINT).abs }
-    p close_number.inspect
 
     @bank.money -= 20
+
+    count_the_winner(close_number)
+
+    clear_stats
+  end
+
+  def count_the_winner(close_number)
+    print_the_winner = ->(name, score) { "1 - #{name} won with #{score} score." }
 
     case close_number <=> user
     when 1
       @dealer.money += 20
-      puts "#{@dealer.name} won with #{@dealer.hands_score} score."
+      puts print_the_winner.call(@dealer.name, @dealer.hands_score)
     when 0
       if @user.hands_score > POINT
         @dealer.money += 20
-        puts "#{@dealer.name} won with #{@dealer.hands_score} score."
+        puts print_the_winner.call(@dealer.name, @dealer.hands_score)
       else
         @user.money += 20
-        puts "#{@user.name} won with #{@user.hands_score} score."
+        puts print_the_winner.call(@user.name, @user.hands_score)
       end
     else
       if @user.hands_score > POINT
         @dealer.money += 20
-        puts "#{@dealer.name} won with #{@dealer.hands_score} score."
+        puts print_the_winner.call(@dealer.name, @dealer.hands_score)
       else
         @dealer.money += BET
         @user.money += BET
         puts "#{@dealer.name} and #{@user.name} divide the bank."
       end
     end
-
-    clear_stats
   end
+
 
   def clear_stats
     @attempt = 0
@@ -90,10 +96,12 @@ class Game
   end
 
   def score_sheet
+    print_scores = ->(name, money) { format('%-15s %s', name, money).gsub(' ', '.') }
+
     puts 'Money: '
-    puts format('%-15s %s', @user.name, @user.money).gsub(' ', '.')
-    puts format('%-15s %s', @dealer.name, @dealer.money).gsub(' ', '.')
-    puts format('%-15s %s', 'Bank', @bank.money).gsub(' ', '.')
+    puts print_scores.call(@user.name, @user.money)
+    puts print_scores.call(@dealer.name, @dealer.money)
+    puts print_scores.call('Bank', @bank.money)
   end
 
   def current_hands(player)
